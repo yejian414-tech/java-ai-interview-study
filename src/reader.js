@@ -12,28 +12,36 @@ function link(text,href){const a=el('a',text);a.href=href;return a}
 function notify(text){clearTimeout(noticeTimer);$('notice').textContent=text;$('notice').hidden=false;noticeTimer=setTimeout(()=>$('notice').hidden=true,3500)}
 function validRoute(input={}){
  const r={...defaultRoute};
- if(['route','library','review','bookmarks'].includes(input.view))r.view=input.view;
+ if(['route','library','important','bookmarks'].includes(input.view))r.view=input.view;
+ if(input.view==='review')r.view='important';
  if(groups.has(input.group))r.group=input.group;
  if(topics.has(input.topic)&&(!r.group||topics.get(input.topic).group_id===r.group)){r.topic=input.topic;r.group=topics.get(input.topic).group_id}
  r.day=Number.isInteger(Number(input.day))&&Number(input.day)>=0&&Number(input.day)<=10?Number(input.day):1;
  r.query=typeof input.query==='string'?input.query.slice(0,200):'';
- if(['all','new','review','understood'].includes(input.filter))r.filter=input.filter;
+ if(['all','new','important'].includes(input.filter))r.filter=input.filter;
+ if(input.filter==='review')r.filter='important';
  if(byId.has(input.qid))r.qid=input.qid;
  r.page=Math.max(1,Math.min(40,Math.floor(Number(input.page)||1)));
  return r;
 }
 function sanitizeProgress(input){
- const p={bookmarks:{},status:{},notes:{},drafts:{},lastRead:'',lastRoute:{...defaultRoute},font:16,mode:'read'};
+ const p={bookmarks:{},important:{},status:{},notes:{},drafts:{},expandedGroups:{},sidebarCollapsed:false,sidebarWidth:280,questionPaneWidth:320,lastRead:'',lastRoute:{...defaultRoute},font:18,mode:'read'};
  if(!input||typeof input!=='object')return p;
  for(const id of byId.keys()){
   if(input.bookmarks&&input.bookmarks[id])p.bookmarks[id]=true;
   if(input.status&&['review','understood'].includes(input.status[id]))p.status[id]=input.status[id];
+  if(input.important&&input.important[id])p.important[id]=true;
+  if(!Object.prototype.hasOwnProperty.call(input,'important')&&input.status?.[id]==='review')p.important[id]=true;
   for(const key of ['notes','drafts'])if(input[key]&&typeof input[key][id]==='string')p[key][id]=input[key][id].slice(0,20000);
  }
  if(byId.has(input.lastRead))p.lastRead=input.lastRead;
  p.lastRoute=validRoute(input.lastRoute||{});
  if([16,18,20].includes(input.font))p.font=input.font;
  if(input.mode==='quiz')p.mode='quiz';
+ p.sidebarCollapsed=input.sidebarCollapsed===true;
+ if(Number.isFinite(input.sidebarWidth))p.sidebarWidth=Math.max(190,Math.min(360,input.sidebarWidth));
+ if(Number.isFinite(input.questionPaneWidth))p.questionPaneWidth=Math.max(240,Math.min(440,input.questionPaneWidth));
+ for(const id of groups.keys())if(typeof input.expandedGroups?.[id]==='boolean')p.expandedGroups[id]=input.expandedGroups[id];
  return p;
 }
 function load(){try{return sanitizeProgress(JSON.parse(localStorage.getItem(STORAGE)||'null'))}catch{return sanitizeProgress(null)}}
@@ -70,11 +78,11 @@ function getQuestions(){
   }
  }else if(route.view==='route')list=data.units.filter(u=>!route.day||u.day===route.day).map(u=>byId.get(u.question_id));
  else if(route.view==='bookmarks')list=data.questions.filter(q=>progress.bookmarks[q.id]);
- else if(route.view==='review')list=data.questions.filter(q=>progress.status[q.id]==='review');
+ else if(route.view==='important')list=data.questions.filter(q=>progress.important[q.id]);
  else if(route.topic)list=topics.get(route.topic).ids.map(n=>byId.get('Q'+String(n).padStart(3,'0')));
  else if(route.group)list=groups.get(route.group).topics.flatMap(t=>t.ids).map(n=>byId.get('Q'+String(n).padStart(3,'0')));
  else list=[...data.questions];
- if(route.filter!=='all')list=list.filter(q=>(progress.status[q.id]||'new')===route.filter);
+ if(route.filter!=='all')list=list.filter(q=>route.filter==='important'?!!progress.important[q.id]:!progress.important[q.id]);
  return list;
 }
 function navigate(patch,{mobile='list',remember=false,replace=false}={}){
@@ -102,24 +110,27 @@ function markText(node,text){
 }
 function navItem(text,icon,count,active,handler){
  const b=button('',()=>{handler();$('mobile-menu').close()},'nav-item');
- const label=el('span',undefined,'nav-label');label.append(el('span',icon,'nav-icon'),el('span',text));b.append(label,el('small',String(count)));
+ const label=el('span',undefined,'nav-label');label.append(el('span',icon,'nav-icon'),el('span',text,'nav-label-text'));b.append(label,el('small',String(count)));b.title=text;b.setAttribute('aria-label',text+'，'+count+'题');
  if(active&&!route.query)b.setAttribute('aria-current','page');return b;
 }
 function renderNavigation(target){
  const root=$(target), primary=el('nav',undefined,'primary-nav');primary.setAttribute('aria-label','学习入口');
- const counts={review:Object.values(progress.status).filter(s=>s==='review').length,bookmarks:Object.keys(progress.bookmarks).length};
- for(const [view,name,icon,count] of [['route','首轮学习','◫',30],['library','全部题目','▤',800],['review','待复习','↻',counts.review],['bookmarks','我的收藏','☆',counts.bookmarks]]){
+ const counts={important:Object.keys(progress.important).length,bookmarks:Object.keys(progress.bookmarks).length};
+ for(const [view,name,icon,count] of [['route','首轮学习','◫',30],['library','全部题目','▤',800],['important','重点','◆',counts.important],['bookmarks','我的收藏','☆',counts.bookmarks]]){
   primary.append(navItem(name,icon,count,route.view===view&&(view!=='library'||!route.group),()=>navigate({view,group:'',topic:'',query:'',filter:'all',qid:'',page:1})));
  }
  const label=el('p','按知识主线浏览','nav-section-label'), subjects=el('nav',undefined,'subject-nav');subjects.setAttribute('aria-label','知识分类');
  for(const group of data.groups){
   const active=route.view==='library'&&route.group===group.id;
-  subjects.append(navItem(group.name,'',group.count,active&&!route.topic,()=>navigate({view:'library',group:group.id,topic:'',query:'',filter:'all',qid:'',page:1})));
-  if(active){
-   const sub=el('div',undefined,'topic-nav');
-   for(const topic of group.topics){const b=button(topic.name,()=>{navigate({topic:topic.id,query:'',filter:'all',qid:'',page:1});$('mobile-menu').close()});if(topic.id===route.topic)b.setAttribute('aria-current','page');sub.append(b)}
-   subjects.append(sub);
-  }
+  const expanded=typeof progress.expandedGroups[group.id]==='boolean'?progress.expandedGroups[group.id]:active;
+  const section=el('div',undefined,'subject-group'), row=el('div',undefined,'subject-row');
+  const icons={java:'J',runtime:'并',spring:'S',data:'数',distributed:'分',network:'网',ai:'AI'};
+  row.append(navItem(group.name,icons[group.id],group.count,active&&!route.topic,()=>{progress.expandedGroups[group.id]=true;progress.sidebarCollapsed=false;navigate({view:'library',group:group.id,topic:'',query:'',filter:'all',qid:'',page:1})}));
+  const sub=el('div',undefined,'topic-nav');sub.id=target+'-topics-'+group.id;sub.hidden=!expanded;
+  const toggle=button(expanded?'⌄':'›',()=>{progress.expandedGroups[group.id]=!expanded;save();renderNavigation('desktop-nav');renderNavigation('mobile-nav');$(target+'-toggle-'+group.id)?.focus({preventScroll:true})},'group-toggle');
+  toggle.id=target+'-toggle-'+group.id;toggle.setAttribute('aria-label',(expanded?'收起':'展开')+group.name);toggle.setAttribute('aria-expanded',String(expanded));toggle.setAttribute('aria-controls',sub.id);row.append(toggle);
+  for(const topic of group.topics){const b=button(topic.name,()=>{navigate({view:'library',group:group.id,topic:topic.id,query:'',filter:'all',qid:'',page:1});$('mobile-menu').close()});if(topic.id===route.topic)b.setAttribute('aria-current','page');sub.append(b)}
+  section.append(row,sub);subjects.append(section);
  }
  root.replaceChildren(primary,label,subjects);
 }
@@ -130,18 +141,18 @@ function renderResume(){
 function renderContext(list){
  $('context-controls').replaceChildren();
  $('search').value=route.query;$('search-clear').hidden=!route.query;$('status-filter').value=route.filter;
- const filterNote=route.filter==='all'?'':' · 已筛选学习状态';
+ const filterNote=route.filter==='all'?'':route.filter==='important'?' · 只看重点':' · 未标重点';
  let heading,context,crumb;
  if(route.query){heading='搜索结果';context='“'+route.query+'” · 搜索全部 800 题，标题匹配优先'+filterNote;crumb='全库搜索';}
  else if(route.view==='route'){
   heading=route.day?'第 '+route.day+' 天，学三个单元':'首轮 30 个学习单元';
-  const all=data.units.filter(u=>!route.day||u.day===route.day), done=all.filter(u=>progress.status[u.question_id]==='understood').length;
-  context='先尝试回答，再阅读核对 · 已理解 '+done+' / '+all.length+' 个单元'+filterNote;crumb='首轮学习 / '+(route.day?'第 '+route.day+' 天':'全部单元');
+  const all=data.units.filter(u=>!route.day||u.day===route.day), marked=all.filter(u=>progress.important[u.question_id]).length;
+  context='先尝试回答，再阅读核对 · 已标重点 '+marked+' / '+all.length+' 个单元'+filterNote;crumb='首轮学习 / '+(route.day?'第 '+route.day+' 天':'全部单元');
   const wrap=el('div',undefined,'day-select'),label=el('label','学习安排');label.htmlFor='day-select';const select=el('select');select.id='day-select';
   for(let i=0;i<=10;i++){const option=el('option',i?'第 '+i+' 天':'全部 30 单元');option.value=i;select.append(option)}select.value=route.day;
   select.onchange=()=>navigate({day:Number(select.value),qid:'',page:1});wrap.append(label,select);$('context-controls').append(wrap);
  }else if(route.view==='bookmarks'){heading='我的收藏';context='把希望继续研究的题目留在这里。'+filterNote;crumb='我的收藏';}
- else if(route.view==='review'){heading='待复习';context='你主动标记需要再看的题目；理解后可调整状态。'+filterNote;crumb='待复习';}
+ else if(route.view==='important'){heading='重点知识点';context='集中查看你标为重点的题目，点击“取消重点”可移出。'+filterNote;crumb='重点';}
  else{
   const g=groups.get(route.group),t=topics.get(route.topic);heading=t?t.name:g?g.name:'全部题目';
   context=t?t.focus:'点击左侧分类缩小范围，选择题目即可在右侧阅读。';context+=filterNote;crumb=['分类题库',g?.name,t?.name].filter(Boolean).join(' / ');
@@ -153,16 +164,16 @@ function renderList(list){
  const start=(route.page-1)*PAGE_SIZE, slice=list.slice(start,start+PAGE_SIZE);
  const nodes=slice.map(q=>{
   const unit=route.view==='route'&&!route.query?units.get(q.id):null;
-  const b=button('',()=>selected(q.id),'question-item');b.dataset.questionId=q.id;b.setAttribute('aria-current',String(q.id===route.qid));
+  const b=button('',()=>selected(q.id),'question-item'+(progress.important[q.id]?' is-important':''));b.dataset.questionId=q.id;b.setAttribute('aria-current',String(q.id===route.qid));
   const head=el('span',undefined,'question-item-head');
   if(unit)head.append(el('span','单元 '+String(unit.id).padStart(2,'0'),'unit-number'));
   head.append(el('span',q.id,'question-id'));if(progress.bookmarks[q.id])head.append(el('span','★','star-indicator'));
   const title=el('span',undefined,'question-item-title');markText(title,unit?unit.title:q.title);
   const sub=el('span',undefined,'question-item-sub');sub.append(el('span',unit?'首读题 · PDF p'+q.page_start:q.topic));
-  const status=progress.status[q.id];sub.append(el('span',status==='review'?'待复习':status==='understood'?'已理解':'未标记','state-label'+(status==='review'?' review':!status?' neutral':'')));
+  sub.append(el('span',progress.important[q.id]?'◆ 重点':'未标重点','state-label'+(progress.important[q.id]?' important':' neutral')));
   b.append(head,title,sub);return b;
  });
- if(!nodes.length){const empty=el('div',undefined,'empty-state');empty.append(el('strong',route.query?'没有找到匹配题目':route.filter!=='all'?'当前筛选下没有题目':route.view==='bookmarks'?'还没有收藏':route.view==='review'?'暂时没有待复习题目':'这里暂时没有题目'),el('p',route.query?'试试更短的关键词，或输入 Q165 这样的题号。':route.view==='bookmarks'?'在阅读区点击“收藏”，便可在此找到。':route.view==='review'?'阅读时点击“待复习”，即可加入这个列表。':'可以切换范围或清除筛选。'));if(route.query)empty.append(button('清空搜索',clearSearch,'primary-button'));else if(route.filter!=='all')empty.append(button('清除筛选',()=>navigate({filter:'all',qid:'',page:1}),'primary-button'));else empty.append(button('开始首轮学习',()=>navigate({view:'route',group:'',topic:'',qid:'',page:1}),'primary-button'));nodes.push(empty)}
+ if(!nodes.length){const empty=el('div',undefined,'empty-state');empty.append(el('strong',route.query?'没有找到匹配题目':route.filter!=='all'?'当前筛选下没有题目':route.view==='bookmarks'?'还没有收藏':route.view==='important'?'还没有重点知识点':'这里暂时没有题目'),el('p',route.query?'试试更短的关键词，或输入 Q165 这样的题号。':route.view==='bookmarks'?'在阅读区点击“收藏”，便可在此找到。':route.view==='important'?'阅读时点击“标为重点”，题目会以暖黄色突出显示并加入这里。':'可以切换范围或清除筛选。'));if(route.query)empty.append(button('清空搜索',clearSearch,'primary-button'));else if(route.filter!=='all')empty.append(button('清除筛选',()=>navigate({filter:'all',qid:'',page:1}),'primary-button'));else empty.append(button('开始首轮学习',()=>navigate({view:'route',group:'',topic:'',qid:'',page:1}),'primary-button'));nodes.push(empty)}
  $('question-list').replaceChildren(...nodes);
  const prev=button('‹',()=>navigate({page:route.page-1,qid:''}));prev.setAttribute('aria-label','上一页题目');prev.disabled=route.page<=1;
  const next=button('›',()=>navigate({page:route.page+1,qid:''}));next.setAttribute('aria-label','下一页题目');next.disabled=start+PAGE_SIZE>=list.length;
@@ -177,6 +188,7 @@ function renderReader(list){
  const bookmark=button(progress.bookmarks[q.id]?'★ 已收藏':'☆ 收藏',()=>{if(progress.bookmarks[q.id])delete progress.bookmarks[q.id];else progress.bookmarks[q.id]=true;save();notify(progress.bookmarks[q.id]?'已加入收藏':'已取消收藏');render()},'bookmark-button');bookmark.id='bookmark-toggle';bookmark.setAttribute('aria-pressed',String(!!progress.bookmarks[q.id]));actions.append(source,bookmark);top.append(where,actions);
  const title=el('h2');title.id='reading-title';title.tabIndex=-1;markText(title,q.title);
  const meta=el('div',undefined,'reader-meta');meta.append(el('span',q.id,'question-id'),el('span',q.learning_priority,'priority-label'),el('span',useUnit?'单元 '+unit.id+' · 第 '+unit.day+' 天':'原文阅读'));if(q.version_review_recommended)meta.append(el('span','建议核验适用版本'));
+ if(progress.important[q.id])meta.append(el('span','◆ 重点','importance-badge'));
  const mode=el('div',undefined,'reader-mode');mode.setAttribute('aria-label','学习方式');
  for(const [value,name] of [['read','阅读原文'],['quiz','先自测']]){const b=button(name,()=>{progress.mode=value;revealedFor='';save();renderReader(getQuestions())});b.setAttribute('aria-pressed',String(progress.mode===value));mode.append(b)}mode.append(el('small','先回忆，再对照要点'));
  root.append(top,title,meta,mode);
@@ -196,19 +208,38 @@ function renderReader(list){
  if(relatedIds.length){const related=el('div',undefined,'related-questions'), links=el('div',undefined,'related-links');related.append(el('h3',useUnit?'需要时补读':'相关题目'));for(const id of relatedIds){const b=button(id,()=>goToQuestion(id));b.setAttribute('aria-label',id+' '+byId.get(id).title);b.title=byId.get(id).title;links.append(b)}related.append(links);root.append(related)}
  const notes=el('details',undefined,'notes');notes.id='personal-notes';notes.open=!!progress.notes[q.id];const summary=el('summary',progress.notes[q.id]?'我的笔记 · 已保存':'添加我的笔记');const note=el('textarea',undefined,'note-input');note.id='note-input';note.setAttribute('aria-label','我的学习笔记');note.placeholder='记一个易错点、一处疑问或你自己的例子。';note.maxLength=20000;note.value=progress.notes[q.id]||'';note.oninput=()=>{progress.notes[q.id]=note.value;summary.textContent=note.value?'我的笔记 · 自动保存':'添加我的笔记';queueSave()};notes.append(summary,note,el('small','笔记保存在当前浏览器，可在“设置与资料”中导出。'));root.append(notes);
  const footer=el('div',undefined,'reader-footer'),rating=el('div',undefined,'self-rating');
- for(const [value,name] of [['review','待复习'],['understood','已理解']]){const b=button(name,()=>{if(progress.status[q.id]===value)delete progress.status[q.id];else progress.status[q.id]=value;progress.lastRead=q.id;save();notify(progress.status[q.id]?'已标记为“'+name+'”':'已清除学习标记');render()},value==='review'?'review':'');b.id='mark-'+value;b.setAttribute('aria-pressed',String(progress.status[q.id]===value));b.disabled=value==='understood'&&progress.mode==='quiz'&&revealedFor!==q.id;rating.append(b)}
+ const important=button(progress.important[q.id]?'◆ 取消重点':'◇ 标为重点',()=>{const wasImportant=!!progress.important[q.id];if(wasImportant)delete progress.important[q.id];else progress.important[q.id]=true;progress.lastRead=q.id;save();notify(wasImportant?'已取消重点标记':'已标为重点，可在侧边栏“重点”查看');render();if(route.qid===q.id)$('mark-important')?.focus({preventScroll:true})},'important-toggle');important.id='mark-important';important.setAttribute('aria-pressed',String(!!progress.important[q.id]));rating.append(important);
  const index=list.findIndex(item=>item.id===q.id),nav=el('div',undefined,'question-navigation');
  const prev=button('上一题',()=>selected(list[index-1].id));prev.id='previous-question';prev.disabled=index<=0;
  const next=button('下一题',()=>selected(list[index+1].id));next.id='next-question';next.disabled=index<0||index>=list.length-1;
  nav.append(prev,el('span',(index+1)+' / '+list.length),next);footer.append(rating,nav);root.append(footer);
 }
+function applyLayout(){
+ const shell=document.querySelector('.app-shell');
+ shell.classList.toggle('sidebar-collapsed',progress.sidebarCollapsed);
+ document.documentElement.style.setProperty('--sidebar-width',progress.sidebarWidth+'px');
+ document.documentElement.style.setProperty('--question-pane-width',progress.questionPaneWidth+'px');
+ const toggle=$('sidebar-toggle');toggle.textContent=progress.sidebarCollapsed?'»':'«';toggle.setAttribute('aria-expanded',String(!progress.sidebarCollapsed));toggle.setAttribute('aria-label',progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏');toggle.title=progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏';
+ $('sidebar-resize').setAttribute('aria-valuenow',String(progress.sidebarWidth));$('question-resize').setAttribute('aria-valuenow',String(progress.questionPaneWidth));
+}
+function setupPaneResize(id,key,min,max,container){
+ const handle=$(id);let drag=null;
+ const maximum=()=>key==='questionPaneWidth'?Math.max(min,Math.min(max,Math.floor($('reading-workspace').getBoundingClientRect().width*.42))):max;
+ const update=value=>{progress[key]=Math.round(Math.max(min,Math.min(maximum(),value)));applyLayout()};
+ const finish=()=>{if(!drag)return;drag=null;document.body.classList.remove('resizing-pane');save()};
+ handle.addEventListener('pointerdown',event=>{if(event.button!==0)return;event.preventDefault();drag={left:container.getBoundingClientRect().left};handle.setPointerCapture(event.pointerId);document.body.classList.add('resizing-pane')});
+ handle.addEventListener('pointermove',event=>{if(drag)update(event.clientX-drag.left)});
+ handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);handle.addEventListener('lostpointercapture',finish);
+ handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home'].includes(event.key))return;event.preventDefault();update(event.key==='Home'?(key==='sidebarWidth'?280:320):progress[key]+(event.key==='ArrowLeft'?-10:10));save()});
+}
 function render(){
  const list=getQuestions(),maxPage=Math.max(1,Math.ceil(list.length/PAGE_SIZE));route.page=Math.min(route.page,maxPage);
  const start=(route.page-1)*PAGE_SIZE;
  if(!list.some(q=>q.id===route.qid))route.qid=list[start]?.id||'';
+ if(!route.qid)mobileView='list';
  const index=list.findIndex(q=>q.id===route.qid);
  if(index>=0)route.page=Math.floor(index/PAGE_SIZE)+1;
- document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;
+ document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;applyLayout();
  renderNavigation('desktop-nav');renderNavigation('mobile-nav');renderContext(list);renderList(list);renderReader(list);updateMobile();syncUrl();progress.lastRoute={...route};
  document.title=(route.qid?route.qid+' · ':'')+'Java + AI Agent 学习手册';
 }
@@ -226,8 +257,12 @@ $('show-list').onclick=()=>{mobileView='list';updateMobile();$('reading-workspac
 $('menu-open').onclick=()=>$('mobile-menu').showModal();$('menu-close').onclick=()=>$('mobile-menu').close();
 $('mobile-menu').addEventListener('click',event=>{if(event.target===$('mobile-menu')){const rect=event.target.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)event.target.close()}});
 $('font-size').onchange=()=>{progress.font=Number($('font-size').value);save();document.documentElement.style.setProperty('--answer-size',progress.font+'px')};
+$('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;applyLayout();save()};
+$('reset-layout').onclick=()=>{progress.sidebarCollapsed=false;progress.sidebarWidth=280;progress.questionPaneWidth=320;progress.font=18;progress.expandedGroups={};render();save();notify('已恢复默认模块大小和目录布局。')};
+setupPaneResize('sidebar-resize','sidebarWidth',190,360,$('desktop-sidebar'));
+setupPaneResize('question-resize','questionPaneWidth',240,440,document.querySelector('.question-pane'));
 function exportProgress(){
- save();const payload={schemaVersion:2,documentKey:data.documentKey,exportedAt:new Date().toISOString(),progress};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=link('',URL.createObjectURL(blob));a.download='学习记录-'+new Date().toLocaleDateString('sv-SE')+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);$('settings').open=false;notify('学习记录已导出，包含收藏、笔记、自测回答和学习标记。');
+ save();const payload={schemaVersion:2,documentKey:data.documentKey,exportedAt:new Date().toISOString(),progress};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=link('',URL.createObjectURL(blob));a.download='学习记录-'+new Date().toLocaleDateString('sv-SE')+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);$('settings').open=false;notify('学习记录已导出，包含重点、收藏、笔记和布局偏好。');
 }
 $('export-progress').onclick=exportProgress;$('backup-hint').onclick=exportProgress;
 $('import-progress').onclick=()=>$('import-file').click();
@@ -238,10 +273,11 @@ $('import-file').onchange=async()=>{
   const payload=JSON.parse(await file.text());
   if(payload.schemaVersion!==2||payload.documentKey!==data.documentKey||!payload.progress||typeof payload.progress!=='object'||Array.isArray(payload.progress))throw new Error('这不是当前题库的学习记录，请检查导入文件。');
   const incoming=sanitizeProgress(payload.progress);
-  for(const key of ['bookmarks','status','notes','drafts'])progress[key]={...progress[key],...incoming[key]};
+  for(const key of ['bookmarks','important','status','notes','drafts','expandedGroups'])progress[key]={...progress[key],...incoming[key]};
   if(incoming.lastRead)progress.lastRead=incoming.lastRead;
   progress.font=incoming.font;progress.mode=incoming.mode;
-  save();render();$('settings').open=false;notify('学习记录已合并。重复题目的笔记和状态采用导入记录。');
+  progress.sidebarCollapsed=incoming.sidebarCollapsed;progress.sidebarWidth=incoming.sidebarWidth;progress.questionPaneWidth=incoming.questionPaneWidth;
+  save();render();$('settings').open=false;notify('学习记录已合并，重点标记和布局偏好已恢复。');
  }catch(error){notify(error instanceof SyntaxError?'无法读取 JSON，请选择导出的学习记录文件。':error.message)}
  finally{$('import-file').value=''}
 };
