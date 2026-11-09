@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+学习记录-*.json
+learning-records*.json

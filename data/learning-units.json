@@ -1,0 +1,348 @@
+[
+  {
+    "id": 1,
+    "day": 1,
+    "title": "对象相等与哈希约定",
+    "question_id": "Q017",
+    "extra_ids": [
+      "Q014",
+      "Q016"
+    ],
+    "check": "为什么只改 equals 会给哈希容器带来问题？"
+  },
+  {
+    "id": 2,
+    "day": 1,
+    "title": "List 容器选型",
+    "question_id": "Q086",
+    "extra_ids": [
+      "Q074",
+      "Q087"
+    ],
+    "check": "能否根据访问方式与修改位置解释选择？"
+  },
+  {
+    "id": 3,
+    "day": 1,
+    "title": "HashMap 的访问路径",
+    "question_id": "Q103",
+    "extra_ids": [
+      "Q107",
+      "Q119"
+    ],
+    "check": "画出一次 put 的主要路径，并解释扩容的作用。"
+  },
+  {
+    "id": 4,
+    "day": 2,
+    "title": "并发 Map",
+    "question_id": "Q123",
+    "extra_ids": [
+      "Q125",
+      "Q127"
+    ],
+    "check": "说清所讨论的 JDK 版本与并发控制方式。"
+  },
+  {
+    "id": 5,
+    "day": 2,
+    "title": "volatile 与原子操作",
+    "question_id": "Q166",
+    "extra_ids": [
+      "Q165",
+      "Q169"
+    ],
+    "check": "为什么可见性和复合操作原子性要分开讨论？"
+  },
+  {
+    "id": 6,
+    "day": 2,
+    "title": "锁与排队同步",
+    "question_id": "Q179",
+    "extra_ids": [
+      "Q173",
+      "Q183"
+    ],
+    "check": "用一个场景说明 synchronized 与 ReentrantLock 如何选择。"
+  },
+  {
+    "id": 7,
+    "day": 3,
+    "title": "线程池",
+    "question_id": "Q187",
+    "extra_ids": [
+      "Q190",
+      "Q191",
+      "Q192"
+    ],
+    "check": "按照参数和提交情况画出任务的执行、排队与拒绝路径。"
+  },
+  {
+    "id": 8,
+    "day": 3,
+    "title": "ThreadLocal",
+    "question_id": "Q197",
+    "extra_ids": [
+      "Q195",
+      "Q196"
+    ],
+    "check": "线程复用时，为什么需要明确清理责任？"
+  },
+  {
+    "id": 9,
+    "day": 3,
+    "title": "JVM 内存与对象存活",
+    "question_id": "Q215",
+    "extra_ids": [
+      "Q237",
+      "Q235"
+    ],
+    "check": "画出运行时内存区域，并解释对象存活判定与 OOM 排查的关系。"
+  },
+  {
+    "id": 10,
+    "day": 4,
+    "title": "IoC 与 Bean 生命周期",
+    "question_id": "Q268",
+    "extra_ids": [
+      "Q284",
+      "Q286"
+    ],
+    "check": "说明谁负责创建、注入、初始化和销毁对象。"
+  },
+  {
+    "id": 11,
+    "day": 4,
+    "title": "AOP 与代理边界",
+    "question_id": "Q278",
+    "extra_ids": [
+      "Q282",
+      "Q283"
+    ],
+    "check": "举一个适合用切面解决的问题，并指出代理边界。"
+  },
+  {
+    "id": 12,
+    "day": 4,
+    "title": "Boot 自动配置",
+    "question_id": "Q308",
+    "extra_ids": [
+      "Q305",
+      "Q309",
+      "Q310"
+    ],
+    "check": "解释自动配置从哪里来、在什么条件下生效。"
+  },
+  {
+    "id": 13,
+    "day": 5,
+    "title": "Spring 事务",
+    "question_id": "Q344",
+    "extra_ids": [
+      "Q341",
+      "Q342",
+      "Q345"
+    ],
+    "check": "解释一个事务失效场景，以及它和代理调用的关系。"
+  },
+  {
+    "id": 14,
+    "day": 5,
+    "title": "MySQL 索引",
+    "question_id": "Q353",
+    "extra_ids": [
+      "Q358",
+      "Q360"
+    ],
+    "check": "给一个查询条件，说明索引的设计与验证方式。"
+  },
+  {
+    "id": 15,
+    "day": 5,
+    "title": "MVCC 与锁",
+    "question_id": "Q376",
+    "extra_ids": [
+      "Q377",
+      "Q382",
+      "Q409"
+    ],
+    "check": "区分快照读、锁定读与隔离级别的前提。"
+  },
+  {
+    "id": 16,
+    "day": 6,
+    "title": "慢 SQL 排查",
+    "question_id": "Q407",
+    "extra_ids": [
+      "Q394",
+      "Q396"
+    ],
+    "check": "从慢 SQL 现象开始，列出需要什么证据再做优化。"
+  },
+  {
+    "id": 17,
+    "day": 6,
+    "title": "Redis 数据与持久化",
+    "question_id": "Q420",
+    "extra_ids": [
+      "Q412",
+      "Q418",
+      "Q419"
+    ],
+    "check": "针对一个业务说明数据类型，以及恢复与丢失窗口的取舍。"
+  },
+  {
+    "id": 18,
+    "day": 6,
+    "title": "缓存一致性",
+    "question_id": "Q437",
+    "extra_ids": [
+      "Q438",
+      "Q439",
+      "Q440",
+      "Q431",
+      "Q432",
+      "Q433"
+    ],
+    "check": "画出一个读写并发时序，并解释方案的边界。"
+  },
+  {
+    "id": 19,
+    "day": 7,
+    "title": "分布式锁",
+    "question_id": "Q442",
+    "extra_ids": [
+      "Q444",
+      "Q446",
+      "Q659"
+    ],
+    "check": "讨论过期、所有权和失败情形，指出锁能保证什么。"
+  },
+  {
+    "id": 20,
+    "day": 7,
+    "title": "MQ 可靠性与幂等",
+    "question_id": "Q477",
+    "extra_ids": [
+      "Q484",
+      "Q485",
+      "Q486"
+    ],
+    "check": "分生产、存储、消费三个环节说明如何应对失败。"
+  },
+  {
+    "id": 21,
+    "day": 7,
+    "title": "消息顺序与积压",
+    "question_id": "Q490",
+    "extra_ids": [
+      "Q487",
+      "Q491",
+      "Q514"
+    ],
+    "check": "解释为什么增加消费者未必解决积压。"
+  },
+  {
+    "id": 22,
+    "day": 8,
+    "title": "最终一致性与消息表",
+    "question_id": "Q502",
+    "extra_ids": [
+      "Q630"
+    ],
+    "check": "画出本地事务和消息投递之间的失败恢复路径。"
+  },
+  {
+    "id": 23,
+    "day": 8,
+    "title": "TCP 与 HTTP",
+    "question_id": "Q532",
+    "extra_ids": [
+      "Q536",
+      "Q541",
+      "Q544"
+    ],
+    "check": "区分连接建立、可靠传输与 HTTP 请求的职责。"
+  },
+  {
+    "id": 24,
+    "day": 8,
+    "title": "HTTPS",
+    "question_id": "Q552",
+    "extra_ids": [
+      "Q553",
+      "Q554",
+      "Q574"
+    ],
+    "check": "解释证书验证与安全通信的关系，并注明协议版本。"
+  },
+  {
+    "id": 25,
+    "day": 9,
+    "title": "系统过载与故障隔离",
+    "question_id": "Q636",
+    "extra_ids": [
+      "Q639",
+      "Q640",
+      "Q641"
+    ],
+    "check": "面对下游变慢，解释熔断、降级和限流各解决什么问题。"
+  },
+  {
+    "id": 26,
+    "day": 9,
+    "title": "Java AI 接入与记忆",
+    "question_id": "Q667",
+    "extra_ids": [
+      "Q677",
+      "Q680"
+    ],
+    "check": "区分模型调用、会话历史与外部知识库。"
+  },
+  {
+    "id": 27,
+    "day": 9,
+    "title": "工具调用与 MCP",
+    "question_id": "Q682",
+    "extra_ids": [
+      "Q686",
+      "Q687"
+    ],
+    "check": "解释模型提出调用后，程序还必须做哪些校验和执行工作。"
+  },
+  {
+    "id": 28,
+    "day": 10,
+    "title": "RAG 全流程",
+    "question_id": "Q698",
+    "extra_ids": [
+      "Q699",
+      "Q700",
+      "Q730"
+    ],
+    "check": "画出入库和查询两条流程，并说明每步的作用。"
+  },
+  {
+    "id": 29,
+    "day": 10,
+    "title": "Agent 执行循环",
+    "question_id": "Q708",
+    "extra_ids": [
+      "Q709",
+      "Q766"
+    ],
+    "check": "画出执行与观察循环，并明确停止和失败条件。"
+  },
+  {
+    "id": 30,
+    "day": 10,
+    "title": "AI 效果与可靠性",
+    "question_id": "Q722",
+    "extra_ids": [
+      "Q723",
+      "Q738",
+      "Q800"
+    ],
+    "check": "说明怎样区分检索失败、生成错误和证据不足。"
+  }
+]
