@@ -27,3 +27,20 @@
 @media(max-width:900px){.desktop-only,.pane-resize{display:none!important}.group-toggle{flex-basis:40px;min-height:44px}.question-item-title{font-size:15px}.reading-pane{padding-left:20px;padding-right:20px}.question-navigation button{min-height:42px}.mobile-menu .nav-label-text{font-size:14px}.mobile-menu .topic-nav button{font-size:13px}.list-toolbar{flex-wrap:wrap}.reader-footer{padding-bottom:max(13px,env(safe-area-inset-bottom))}}
 @media print{.pane-resize{display:none!important}}
 @media(min-width:901px){.app-shell{grid-template-columns:var(--sidebar-width,280px) minmax(0,1fr)}}
+
+/* Full sidebar dismissal and a centered question workspace. */
+.brand-mark{background:transparent;color:var(--ink);border-radius:6px;font-size:23px}.brand-mark:hover:not(:disabled){background:var(--soft);color:var(--blue)}
+.subject-nav>.nav-item .nav-icon{display:none}.subject-nav>.nav-item .nav-label{gap:0}.subject-nav>.nav-item{margin-top:3px}
+.random-controls{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}.random-controls label{font-size:12px;color:var(--muted)}.random-controls select{font-size:13px;min-height:39px}.random-controls #random-group{min-width:145px;max-width:220px}.random-controls #random-filter{max-width:112px}.random-controls .primary-button{white-space:nowrap}
+.random-mode .reading-workspace{display:block;max-width:960px;margin-left:auto;margin-right:auto;min-height:540px}.random-mode .question-pane,.random-mode .mobile-switch{display:none!important}.random-mode .reading-pane{display:flex!important}.random-mode .is-empty .question-pane{display:flex!important;border-right:0}.random-mode .is-empty .reading-pane{display:none!important}.random-mode #question-resize{display:none!important}
+.random-mode .reading-pane{padding:28px 36px 0}.random-mode #reader-content{max-width:880px;width:100%;margin-left:auto;margin-right:auto}.random-mode .answer-area{max-width:100%}
+.random-mode .context-header{align-items:flex-start}.random-mode #context-controls{max-width:60%}
+@media(min-width:901px){
+ .app-shell.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}.sidebar-collapsed #desktop-sidebar{display:none}.sidebar-collapsed .workspace{width:100%;max-width:1180px;margin-left:auto;margin-right:auto;padding-left:32px;padding-right:32px}
+ .sidebar-collapsed .reading-workspace{display:block;max-width:960px;margin-left:auto;margin-right:auto}.sidebar-collapsed .reading-workspace[data-mobile=reader] .question-pane{display:none}.sidebar-collapsed .reading-workspace[data-mobile=list] .reading-pane{display:none}.sidebar-collapsed .reading-pane{padding:28px 36px 0}.sidebar-collapsed #reader-content{max-width:880px;width:100%;margin-left:auto;margin-right:auto}.sidebar-collapsed .answer-area{max-width:100%}
+ .sidebar-collapsed .mobile-switch{display:flex;max-width:960px;margin:0 auto 14px;border-bottom:1px solid var(--line);gap:16px}.sidebar-collapsed .mobile-switch button{padding:8px 2px;color:var(--muted);border-bottom:2px solid transparent;font-size:13px}.sidebar-collapsed .mobile-switch button[aria-pressed=true]{color:var(--blue);border-bottom-color:var(--blue)}.sidebar-collapsed #question-resize{display:none}
+ .random-mode .workspace{max-width:1180px;width:100%;margin-left:auto;margin-right:auto}
+}
+@media(max-width:1100px) and (min-width:901px){.random-mode .context-header{flex-direction:column}.random-mode #context-controls{max-width:100%;width:100%}.random-controls{justify-content:flex-start}}
+@media(max-width:900px){.random-mode .context-header{flex-direction:column}.random-mode #context-controls{max-width:100%;width:100%}.random-controls{justify-content:flex-start;gap:8px}.random-controls label{flex-basis:100%}.random-controls #random-group{flex:1;min-width:130px;max-width:100%}.random-controls #random-filter{max-width:104px}.random-controls .primary-button{padding-left:12px;padding-right:12px}.random-mode .reading-pane{padding:22px 20px 0}.random-mode .reading-workspace{min-height:450px}}
+@media(max-width:380px){.random-controls #random-group{flex-basis:100%}.random-mode .reading-pane{padding-left:16px;padding-right:16px}}
