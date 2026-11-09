@@ -31,12 +31,11 @@
 .question-item.is-important{background:var(--important-bg);border-left-color:#e0b55e}.question-item.is-important:hover{background:#fff2cf}.question-item.is-important[aria-current=true]{background:var(--important-selected);border-left-color:var(--important-line);box-shadow:inset 0 0 0 1px #dba749}.question-item.is-important[aria-current=true] .question-id,.state-label.important{color:var(--important-ink)}.importance-badge{display:inline-block;background:var(--important-bg);color:var(--important-ink);border:1px solid #e3c68f;border-radius:4px;padding:2px 8px;font-size:12px}
 .self-rating .important-toggle{font-size:14px;min-height:42px;padding:8px 15px}.self-rating .important-toggle[aria-pressed=true]{background:var(--important-selected);color:var(--important-ink);border-color:var(--important-line)}.self-rating .important-toggle:hover{background:var(--important-bg)}
 .question-item-title{font-size:15px;line-height:1.85}.question-item-sub,.state-label{font-size:12px}.question-item{padding:16px 17px}.nav-item{font-size:14px;min-height:45px}.nav-item small,.topic-nav button{font-size:12px}.topic-nav button{padding:9px 12px;min-height:38px}.reader-location,.reader-meta,.source-link{font-size:12px}.reader-mode button{font-size:14px;padding:10px 13px}.notes summary{font-size:14px}.reader-mode small,.source-caption,.source-note{font-size:11px}.question-navigation button{font-size:13px;min-height:40px;padding:8px 12px}.question-navigation span{font-size:12px}.related-links button{font-size:12px;min-height:36px}.list-toolbar{font-size:13px}.list-toolbar select{font-size:12px;max-width:112px}
-@media(min-width:901px){.app-shell{grid-template-columns:var(--sidebar-width,236px) minmax(0,1fr)}.reading-workspace{grid-template-columns:minmax(240px,min(var(--question-pane-width,320px),42%)) minmax(0,1fr)}.workspace{padding:22px 24px 16px}.reading-pane{padding-left:28px;padding-right:28px}.app-shell.sidebar-collapsed{grid-template-columns:66px minmax(0,1fr)}.sidebar-collapsed .sidebar{padding:22px 7px;overflow-x:hidden}.sidebar-collapsed .nav-label-text,.sidebar-collapsed .nav-item small,.sidebar-collapsed .nav-section-label,.sidebar-collapsed .topic-nav,.sidebar-collapsed .group-toggle,.sidebar-collapsed .sidebar-foot,.sidebar-collapsed #sidebar-resize{display:none}.sidebar-collapsed .nav-item{justify-content:center;padding:10px 8px;min-height:45px}.sidebar-collapsed .nav-label{justify-content:center}.sidebar-collapsed .nav-icon{width:auto;font-size:16px}.sidebar-collapsed .subject-nav{margin-top:18px}.sidebar-collapsed .subject-row{display:block}}
+@media(min-width:901px){:root{scrollbar-gutter:stable}.app-shell{grid-template-columns:var(--sidebar-width,280px) minmax(0,1fr)}.reading-workspace{grid-template-columns:var(--question-pane-width,320px) minmax(0,1fr)}.workspace{padding:22px 24px 16px;container-type:inline-size}.reading-pane{padding-left:28px;padding-right:28px}}
 @media(max-width:900px){.desktop-only,.pane-resize{display:none!important}.group-toggle{flex-basis:40px;min-height:44px}.question-item-title{font-size:15px}.reading-pane{padding-left:20px;padding-right:20px}.question-navigation button{min-height:42px}.mobile-menu .nav-label-text{font-size:14px}.mobile-menu .topic-nav button{font-size:13px}.list-toolbar{flex-wrap:wrap}.reader-footer{padding-bottom:max(13px,env(safe-area-inset-bottom))}}
 @media print{.pane-resize{display:none!important}}
-@media(min-width:901px){.app-shell{grid-template-columns:var(--sidebar-width,280px) minmax(0,1fr)}}
 
-/* Full sidebar dismissal and a centered question workspace. */
+/* Main navigation can be hidden independently of the question list. */
 .brand-mark{background:transparent;color:var(--ink);border-radius:6px;font-size:23px}.brand-mark:hover:not(:disabled){background:var(--soft);color:var(--blue)}
 .subject-nav>.nav-item .nav-icon{display:none}.subject-nav>.nav-item .nav-label{gap:0}.subject-nav>.nav-item{margin-top:3px}
 .random-controls{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}.random-controls label{font-size:12px;color:var(--muted)}.random-controls select{font-size:13px;min-height:39px}.random-controls #random-group{min-width:145px;max-width:220px}.random-controls #random-filter{max-width:112px}.random-controls .primary-button{white-space:nowrap}
@@ -44,9 +43,12 @@
 .random-mode .reading-pane{padding:28px 36px 0}.random-mode #reader-content{max-width:880px;width:100%;margin-left:auto;margin-right:auto}.random-mode .answer-area{max-width:100%}
 .random-mode .context-header{align-items:flex-start}.random-mode #context-controls{max-width:60%}
 @media(min-width:901px){
- .app-shell.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}.sidebar-collapsed #desktop-sidebar{display:none}.sidebar-collapsed .workspace{width:100%;max-width:1180px;margin-left:auto;margin-right:auto;padding-left:32px;padding-right:32px}
- .sidebar-collapsed .reading-workspace{display:block;max-width:960px;margin-left:auto;margin-right:auto}.sidebar-collapsed .reading-workspace[data-mobile=reader] .question-pane{display:none}.sidebar-collapsed .reading-workspace[data-mobile=list] .reading-pane{display:none}.sidebar-collapsed .reading-pane{padding:28px 36px 0}.sidebar-collapsed #reader-content{max-width:880px;width:100%;margin-left:auto;margin-right:auto}.sidebar-collapsed .answer-area{max-width:100%}
- .sidebar-collapsed .mobile-switch{display:flex;max-width:960px;margin:0 auto 14px;border-bottom:1px solid var(--line);gap:16px}.sidebar-collapsed .mobile-switch button{padding:8px 2px;color:var(--muted);border-bottom:2px solid transparent;font-size:13px}.sidebar-collapsed .mobile-switch button[aria-pressed=true]{color:var(--blue);border-bottom-color:var(--blue)}.sidebar-collapsed #question-resize{display:none}
+ .app-shell.sidebar-collapsed{grid-template-columns:minmax(0,1fr)}.sidebar-collapsed #desktop-sidebar{display:none}
+ .sidebar-collapsed #reader-content{max-width:960px;width:100%;margin-left:auto;margin-right:auto}.sidebar-collapsed .answer-area{max-width:100%}
+ .sidebar-collapsed h1{font-size:clamp(28px,2.5cqi,32px)}.sidebar-collapsed #reading-title{font-size:clamp(27px,2.3cqi,31px)}
+ .sidebar-collapsed .question-item-title{font-size:clamp(16px,1.3cqi,18px)}.sidebar-collapsed .question-id{font-size:12px}.sidebar-collapsed .question-item-sub,.sidebar-collapsed .state-label{font-size:13px}.sidebar-collapsed .list-toolbar{font-size:14px}
+ .sidebar-collapsed .answer-text{font-size:calc(var(--answer-size) + clamp(2px,.3cqi,4px))}.sidebar-collapsed .quiz-box textarea,.sidebar-collapsed .note-input{font-size:calc(var(--answer-size) + clamp(1px,.15cqi,2px))}
+ .sidebar-collapsed .context-header p,.sidebar-collapsed .reader-location,.sidebar-collapsed .reader-meta,.sidebar-collapsed .source-link{font-size:14px}.sidebar-collapsed .reader-mode button,.sidebar-collapsed .notes summary{font-size:16px}.sidebar-collapsed .quiz-box>p,.sidebar-collapsed .correction,.sidebar-collapsed .unit-check p{font-size:16px}.sidebar-collapsed .question-navigation button{font-size:14px}
  .random-mode .workspace{max-width:1180px;width:100%;margin-left:auto;margin-right:auto}
 }
 @media(max-width:1100px) and (min-width:901px){.random-mode .context-header{flex-direction:column}.random-mode #context-controls{max-width:100%;width:100%}.random-controls{justify-content:flex-start}}
@@ -71,7 +73,7 @@
       <section class="question-pane" aria-label="题目列表"><div class="list-toolbar"><span id="result-count" role="status" aria-live="polite"></span><label class="sr-only" for="status-filter">筛选重点标记</label><select id="status-filter"><option value="all">全部题目</option><option value="important">只看重点</option><option value="new">未标重点</option></select></div><div id="question-list" class="question-list"></div><div class="pagination" id="pagination"></div><div id="question-resize" class="pane-resize" role="separator" tabindex="0" aria-label="调整题目列表宽度" aria-orientation="vertical" aria-valuemin="240" aria-valuemax="440" aria-valuenow="320" title="拖动调整题目列表宽度，也可用左右方向键调整"></div></section>
       <article class="reading-pane" id="reading-pane" aria-labelledby="reading-title"><div id="reader-content"></div></article>
     </div>
-    <p class="source-note">左上角可收起整个目录，让题目居中显示。重点题目以暖黄色突出，随机出题同轮不重复。</p>
+    <p class="source-note">电脑端可从左上角收起学习目录，保留题目列表并放大正文。重点题目以暖黄色突出，随机出题同轮不重复。</p>
   </main>
 </div>
 <dialog id="mobile-menu" class="mobile-menu"><div class="dialog-header"><strong>学习目录</strong><button class="icon-button" id="menu-close" type="button" aria-label="关闭学习目录">×</button></div><div id="mobile-nav"></div></dialog>
@@ -309,24 +311,32 @@ function renderReader(list){
  const next=button(random?(index===list.length-1?'再来一轮':'换一题'):'下一题',()=>random?nextRandomQuestion():selected(list[index+1].id));next.id='next-question';next.disabled=random?!list.length:index<0||index>=list.length-1;
  nav.append(prev,el('span',(index+1)+' / '+list.length),next);footer.append(rating,nav);root.append(footer);
 }
+function questionPaneMaximum(){
+ // Use the space with navigation expanded in both states, so its removal
+ // gives all the extra width to the reader without moving the list divider.
+ const shell=document.querySelector('.app-shell'),workspace=getComputedStyle(document.querySelector('.workspace')),frame=getComputedStyle($('reading-workspace'));
+ const available=shell.clientWidth-progress.sidebarWidth-parseFloat(workspace.paddingLeft)-parseFloat(workspace.paddingRight)-parseFloat(frame.borderLeftWidth)-parseFloat(frame.borderRightWidth);
+ return Math.max(240,Math.min(440,Math.floor(available*.42)));
+}
 function applyLayout(){
  const shell=document.querySelector('.app-shell');
  shell.classList.toggle('sidebar-collapsed',progress.sidebarCollapsed);
  shell.classList.toggle('random-mode',route.view==='random'&&!route.query);
  document.documentElement.style.setProperty('--sidebar-width',progress.sidebarWidth+'px');
- document.documentElement.style.setProperty('--question-pane-width',progress.questionPaneWidth+'px');
+ const questionMaximum=questionPaneMaximum(),questionWidth=Math.min(progress.questionPaneWidth,questionMaximum);
+ document.documentElement.style.setProperty('--question-pane-width',questionWidth+'px');
  const toggle=$('sidebar-toggle');toggle.textContent='☰';toggle.setAttribute('aria-expanded',String(!progress.sidebarCollapsed));toggle.setAttribute('aria-label',progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏');toggle.title=progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏';
- $('sidebar-resize').setAttribute('aria-valuenow',String(progress.sidebarWidth));$('question-resize').setAttribute('aria-valuenow',String(progress.questionPaneWidth));
+ $('sidebar-resize').setAttribute('aria-valuenow',String(progress.sidebarWidth));$('question-resize').setAttribute('aria-valuenow',String(questionWidth));$('question-resize').setAttribute('aria-valuemax',String(questionMaximum));
 }
 function setupPaneResize(id,key,min,max,container){
  const handle=$(id);let drag=null;
- const maximum=()=>key==='questionPaneWidth'?Math.max(min,Math.min(max,Math.floor($('reading-workspace').getBoundingClientRect().width*.42))):max;
+ const maximum=()=>key==='questionPaneWidth'?questionPaneMaximum():max;
  const update=value=>{progress[key]=Math.round(Math.max(min,Math.min(maximum(),value)));applyLayout()};
  const finish=()=>{if(!drag)return;drag=null;document.body.classList.remove('resizing-pane');save()};
  handle.addEventListener('pointerdown',event=>{if(event.button!==0)return;event.preventDefault();drag={left:container.getBoundingClientRect().left};handle.setPointerCapture(event.pointerId);document.body.classList.add('resizing-pane')});
  handle.addEventListener('pointermove',event=>{if(drag)update(event.clientX-drag.left)});
  handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);handle.addEventListener('lostpointercapture',finish);
- handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home'].includes(event.key))return;event.preventDefault();update(event.key==='Home'?(key==='sidebarWidth'?280:320):progress[key]+(event.key==='ArrowLeft'?-10:10));save()});
+ handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home'].includes(event.key))return;event.preventDefault();update(event.key==='Home'?(key==='sidebarWidth'?280:320):container.getBoundingClientRect().width+(event.key==='ArrowLeft'?-10:10));save()});
 }
 function render(){
  const list=getQuestions(),maxPage=Math.max(1,Math.ceil(list.length/PAGE_SIZE));route.page=Math.min(route.page,maxPage);
@@ -354,7 +364,7 @@ $('show-list').onclick=()=>{mobileView='list';updateMobile();$('reading-workspac
 $('menu-open').onclick=()=>$('mobile-menu').showModal();$('menu-close').onclick=()=>$('mobile-menu').close();
 $('mobile-menu').addEventListener('click',event=>{if(event.target===$('mobile-menu')){const rect=event.target.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)event.target.close()}});
 $('font-size').onchange=()=>{progress.font=Number($('font-size').value);save();document.documentElement.style.setProperty('--answer-size',progress.font+'px')};
-$('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;if(progress.sidebarCollapsed)mobileView=route.qid?'reader':'list';applyLayout();updateMobile();save()};
+$('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;applyLayout();save()};
 $('reset-layout').onclick=()=>{progress.sidebarCollapsed=false;progress.sidebarWidth=280;progress.questionPaneWidth=320;progress.font=18;progress.expandedGroups={};render();save();notify('已恢复默认模块大小和目录布局。')};
 setupPaneResize('sidebar-resize','sidebarWidth',190,360,$('desktop-sidebar'));
 setupPaneResize('question-resize','questionPaneWidth',240,440,document.querySelector('.question-pane'));
@@ -384,6 +394,7 @@ document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&e
 document.addEventListener('click',event=>{if(!$('settings').contains(event.target))$('settings').open=false});
 window.addEventListener('popstate',()=>{clearTimeout(searchTimer);depth=history.state?.studyReader===data.documentKey?history.state.depth||0:0;searchOrigin=history.state?.searchOrigin?validRoute(history.state.searchOrigin):null;route=fromHash()||{...defaultRoute};revealedFor='';mobileView='reader';render();save()});
 window.addEventListener('pagehide',save);
+window.addEventListener('resize',applyLayout);
 const appHeader=document.querySelector('.app-header');
 new ResizeObserver(()=>document.documentElement.style.setProperty('--header-height',appHeader.getBoundingClientRect().height+'px')).observe(appHeader);
 render();save();

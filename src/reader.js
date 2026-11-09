@@ -229,24 +229,32 @@ function renderReader(list){
  const next=button(random?(index===list.length-1?'再来一轮':'换一题'):'下一题',()=>random?nextRandomQuestion():selected(list[index+1].id));next.id='next-question';next.disabled=random?!list.length:index<0||index>=list.length-1;
  nav.append(prev,el('span',(index+1)+' / '+list.length),next);footer.append(rating,nav);root.append(footer);
 }
+function questionPaneMaximum(){
+ // Use the space with navigation expanded in both states, so its removal
+ // gives all the extra width to the reader without moving the list divider.
+ const shell=document.querySelector('.app-shell'),workspace=getComputedStyle(document.querySelector('.workspace')),frame=getComputedStyle($('reading-workspace'));
+ const available=shell.clientWidth-progress.sidebarWidth-parseFloat(workspace.paddingLeft)-parseFloat(workspace.paddingRight)-parseFloat(frame.borderLeftWidth)-parseFloat(frame.borderRightWidth);
+ return Math.max(240,Math.min(440,Math.floor(available*.42)));
+}
 function applyLayout(){
  const shell=document.querySelector('.app-shell');
  shell.classList.toggle('sidebar-collapsed',progress.sidebarCollapsed);
  shell.classList.toggle('random-mode',route.view==='random'&&!route.query);
  document.documentElement.style.setProperty('--sidebar-width',progress.sidebarWidth+'px');
- document.documentElement.style.setProperty('--question-pane-width',progress.questionPaneWidth+'px');
+ const questionMaximum=questionPaneMaximum(),questionWidth=Math.min(progress.questionPaneWidth,questionMaximum);
+ document.documentElement.style.setProperty('--question-pane-width',questionWidth+'px');
  const toggle=$('sidebar-toggle');toggle.textContent='☰';toggle.setAttribute('aria-expanded',String(!progress.sidebarCollapsed));toggle.setAttribute('aria-label',progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏');toggle.title=progress.sidebarCollapsed?'展开侧边栏':'收起侧边栏';
- $('sidebar-resize').setAttribute('aria-valuenow',String(progress.sidebarWidth));$('question-resize').setAttribute('aria-valuenow',String(progress.questionPaneWidth));
+ $('sidebar-resize').setAttribute('aria-valuenow',String(progress.sidebarWidth));$('question-resize').setAttribute('aria-valuenow',String(questionWidth));$('question-resize').setAttribute('aria-valuemax',String(questionMaximum));
 }
 function setupPaneResize(id,key,min,max,container){
  const handle=$(id);let drag=null;
- const maximum=()=>key==='questionPaneWidth'?Math.max(min,Math.min(max,Math.floor($('reading-workspace').getBoundingClientRect().width*.42))):max;
+ const maximum=()=>key==='questionPaneWidth'?questionPaneMaximum():max;
  const update=value=>{progress[key]=Math.round(Math.max(min,Math.min(maximum(),value)));applyLayout()};
  const finish=()=>{if(!drag)return;drag=null;document.body.classList.remove('resizing-pane');save()};
  handle.addEventListener('pointerdown',event=>{if(event.button!==0)return;event.preventDefault();drag={left:container.getBoundingClientRect().left};handle.setPointerCapture(event.pointerId);document.body.classList.add('resizing-pane')});
  handle.addEventListener('pointermove',event=>{if(drag)update(event.clientX-drag.left)});
  handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);handle.addEventListener('lostpointercapture',finish);
- handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home'].includes(event.key))return;event.preventDefault();update(event.key==='Home'?(key==='sidebarWidth'?280:320):progress[key]+(event.key==='ArrowLeft'?-10:10));save()});
+ handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home'].includes(event.key))return;event.preventDefault();update(event.key==='Home'?(key==='sidebarWidth'?280:320):container.getBoundingClientRect().width+(event.key==='ArrowLeft'?-10:10));save()});
 }
 function render(){
  const list=getQuestions(),maxPage=Math.max(1,Math.ceil(list.length/PAGE_SIZE));route.page=Math.min(route.page,maxPage);
@@ -274,7 +282,7 @@ $('show-list').onclick=()=>{mobileView='list';updateMobile();$('reading-workspac
 $('menu-open').onclick=()=>$('mobile-menu').showModal();$('menu-close').onclick=()=>$('mobile-menu').close();
 $('mobile-menu').addEventListener('click',event=>{if(event.target===$('mobile-menu')){const rect=event.target.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)event.target.close()}});
 $('font-size').onchange=()=>{progress.font=Number($('font-size').value);save();document.documentElement.style.setProperty('--answer-size',progress.font+'px')};
-$('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;if(progress.sidebarCollapsed)mobileView=route.qid?'reader':'list';applyLayout();updateMobile();save()};
+$('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;applyLayout();save()};
 $('reset-layout').onclick=()=>{progress.sidebarCollapsed=false;progress.sidebarWidth=280;progress.questionPaneWidth=320;progress.font=18;progress.expandedGroups={};render();save();notify('已恢复默认模块大小和目录布局。')};
 setupPaneResize('sidebar-resize','sidebarWidth',190,360,$('desktop-sidebar'));
 setupPaneResize('question-resize','questionPaneWidth',240,440,document.querySelector('.question-pane'));
@@ -304,6 +312,7 @@ document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&e
 document.addEventListener('click',event=>{if(!$('settings').contains(event.target))$('settings').open=false});
 window.addEventListener('popstate',()=>{clearTimeout(searchTimer);depth=history.state?.studyReader===data.documentKey?history.state.depth||0:0;searchOrigin=history.state?.searchOrigin?validRoute(history.state.searchOrigin):null;route=fromHash()||{...defaultRoute};revealedFor='';mobileView='reader';render();save()});
 window.addEventListener('pagehide',save);
+window.addEventListener('resize',applyLayout);
 const appHeader=document.querySelector('.app-header');
 new ResizeObserver(()=>document.documentElement.style.setProperty('--header-height',appHeader.getBoundingClientRect().height+'px')).observe(appHeader);
 render();save();
