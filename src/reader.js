@@ -209,8 +209,11 @@ function renderReader(list){
  const answer=el('div',undefined,'answer-area');answer.id='answer-area';answer.hidden=progress.mode==='quiz'&&revealedFor!==q.id;
  if(q.correction){const correction=el('div',undefined,'correction');correction.append(el('strong','已核验的版本校订'),el('p',q.correction.text),link('查看官方依据',q.correction.url));answer.append(correction)}
  const body=el('div',undefined,'answer-text');
- for(const text of q.answer_original.split(/\n\s*\n/)){const paragraph=el('p');markText(paragraph,text);body.append(paragraph)}
+ const sourceNotes=[];
+ const answerText=q.answer_original.replace(/[（(]\s*来源\s*[:：][^）)]*[）)]/g,note=>{sourceNotes.push(note.replace(/\s*\n\s*/g,'').trim());return ''}).trim();
+ for(const text of answerText.split(/\n\s*\n/)){const paragraph=el('p');markText(paragraph,text);body.append(paragraph)}
  answer.append(body,el('p','以上为 PDF 提取原文；代码、图形及排版以原文件为准。','source-caption'));
+ for(const note of sourceNotes)answer.append(el('p',note,'source-attribution'));
  if(progress.mode==='quiz'){
   const quiz=el('div',undefined,'quiz-box');quiz.append(el('p',useUnit?unit.check:'先用自己的话回答，再展开原文核对。'));
   const draft=el('textarea');draft.id='quiz-answer';draft.setAttribute('aria-label','我的自测回答');draft.placeholder='写下你记得的要点，也可以先口述。';draft.maxLength=20000;draft.value=progress.drafts[q.id]||'';draft.oninput=()=>{progress.drafts[q.id]=draft.value;queueSave()};

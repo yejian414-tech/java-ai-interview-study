@@ -14,6 +14,8 @@
 .state-label.neutral{color:var(--muted)}.skip-link{clip-path:inset(50%)}.skip-link:focus{clip-path:none}.reading-pane{scroll-margin-top:94px}
 @media(max-width:900px){.app-header{position:sticky;top:0}.mobile-switch{position:sticky;top:var(--header-height,114px);z-index:10;background:var(--paper)}.reading-workspace{scroll-margin-top:calc(var(--header-height,114px) + 50px)}.reading-pane{scroll-margin-top:calc(var(--header-height,114px) + 50px)}}
 
+.source-attribution{margin-top:5px;font-size:11px;color:var(--muted);line-height:1.8;overflow-wrap:anywhere}
+
 /* Adjustable modules and persistent directory expansion. */
 :root{--important-bg:#fff8e8;--important-selected:#ffefbd;--important-ink:#7d4b05;--important-line:#bd7a12}
 .brand-mark{border:0;cursor:pointer;font-size:25px}.brand-mark:hover:not(:disabled){background:#1957bc;color:#fff}
