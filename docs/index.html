@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <title>Java + AI Agent · 学习阅读页</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%232167d8'/%3E%3Ctext x='20' y='28' text-anchor='middle' font-size='25' fill='white'%3E学%3C/text%3E%3C/svg%3E">
+<script>
+(()=>{let theme='system';try{const saved=JSON.parse(localStorage.getItem('codex-study:java-ai-a46081802917-v2')||'null');if(['light','dark','system'].includes(saved?.theme))theme=saved.theme}catch{}document.documentElement.dataset.theme=theme==='dark'||theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'})();
+</script>
 <style>:root{--paper:#f4f7fb;--ink:#18304c;--muted:#596b80;--line:#dce4ee;--blue:#2167d8;--green:#16735e;--soft:#edf3ff;--answer-size:16px;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;color:var(--ink);background:var(--paper);font-size:14px;line-height:1.65}
 *{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit;color:inherit}button,a,input,textarea,select,summary{outline-offset:3px}button{cursor:pointer;background:none;border:0}button:disabled{cursor:default;opacity:.45}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}button:hover:not(:disabled){background-color:var(--soft)}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue)}[hidden]{display:none!important}h1,h2,h3,p{margin:0}h1{font-size:25px;line-height:1.4;font-weight:650}h2{font-size:23px;line-height:1.55;font-weight:650;overflow-wrap:anywhere}h3{font-size:15px;font-weight:600}small{font-size:12px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip-link{position:fixed;top:-100px;left:12px;z-index:100;background:white;padding:10px}.skip-link:focus{top:8px}
 .app-header{position:sticky;top:0;z-index:20;min-height:77px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:28px;padding:13px 28px}.brand{display:flex;align-items:center;gap:11px;flex:0 0 226px;font-size:17px;font-weight:650;line-height:1.4}.brand small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:3px}.brand-mark{display:grid;place-items:center;width:34px;height:38px;background:var(--blue);color:#fff;border-radius:5px 10px 10px 5px;font-size:18px}.global-search{display:flex;gap:10px;align-items:center;max-width:700px;flex:1;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:0 12px}.global-search>span{font-size:24px;color:var(--muted);line-height:1}.global-search:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px #2167d812}.global-search input{width:100%;min-width:0;min-height:42px;border:0;outline:none;background:transparent;font-size:14px}.global-search input::-webkit-search-cancel-button{display:none}kbd{color:var(--muted);font-family:inherit;font-size:11px;white-space:nowrap;border:1px solid var(--line);border-radius:3px;padding:1px 5px}.icon-button{display:grid;place-items:center;min-width:34px;min-height:34px;border-radius:5px;font-size:22px;line-height:1}.settings{position:relative;margin-left:auto;flex-shrink:0}.settings>summary{cursor:pointer;color:var(--muted);padding:8px 2px}.settings-panel{position:absolute;right:0;top:44px;z-index:40;width:224px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:9px;box-shadow:0 10px 40px #18304c15;display:grid;gap:9px}.settings-panel button,.settings-panel a{text-align:left;padding:7px 8px;border-radius:4px}.settings-panel label{color:var(--muted);font-size:12px}.settings-panel hr{width:100%;border:0;border-top:1px solid var(--line);margin:3px 0}select{border:1px solid var(--line);border-radius:5px;padding:6px 9px;background:#fff;max-width:100%}
@@ -56,6 +59,29 @@
 @media(max-width:1100px) and (min-width:901px){.random-mode .context-header{flex-direction:column}.random-mode #context-controls{max-width:100%;width:100%}.random-controls{justify-content:flex-start}}
 @media(max-width:900px){.random-mode .context-header{flex-direction:column}.random-mode #context-controls{max-width:100%;width:100%}.random-controls{justify-content:flex-start;gap:8px}.random-controls label{flex-basis:100%}.random-controls #random-group{flex:1;min-width:130px;max-width:100%}.random-controls #random-filter{max-width:104px}.random-controls .primary-button{padding-left:12px;padding-right:12px}.random-mode .reading-pane{padding:22px 20px 0}.random-mode .reading-workspace{min-height:450px}}
 @media(max-width:380px){.random-controls #random-group{flex-basis:100%}.random-mode .reading-pane{padding-left:16px;padding-right:16px}}
+
+/* Theme controls keep the existing reading layout. */
+:root{color-scheme:light;--surface:#fff}
+.header-actions{display:flex;align-items:center;gap:12px;margin-left:auto;flex-shrink:0}.header-actions .settings{margin-left:0}
+.theme-toggle{border:1px solid var(--line);border-radius:6px;min-width:38px;min-height:38px;color:var(--muted)}.theme-sun{display:none}
+[data-theme=dark] .theme-sun{display:block}[data-theme=dark] .theme-moon{display:none}
+.settings-panel{max-height:calc(100dvh - var(--header-height,77px) - 16px);overflow-y:auto}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:1}
+@media(max-width:900px){.header-actions{gap:8px}.settings-extra-label{display:none}}
+@media screen{
+ [data-theme=dark]{color-scheme:dark;--paper:#111820;--surface:#18222e;--ink:#e2eaf4;--muted:#a5b3c5;--line:#344355;--blue:#8ab4ff;--green:#70d2b4;--soft:#23354e;--important-bg:#30281b;--important-selected:#46371c;--important-ink:#ffd17a;--important-line:#d7a445}
+ [data-theme=dark] :is(.app-header,.settings-panel,.reading-workspace,.reader-footer,.mobile-menu,select,.skip-link){background:var(--surface)}
+ [data-theme=dark] .question-item{border-bottom-color:#2a3849}
+ [data-theme=dark] .question-item.is-important{border-left-color:#9c7835}[data-theme=dark] .question-item.is-important:hover{background:#3b301d}
+ [data-theme=dark] .question-item.is-important[aria-current=true]{border-left-color:var(--important-line);box-shadow:inset 0 0 0 1px var(--important-line)}
+ [data-theme=dark] .importance-badge{border-color:#8a692f}
+ [data-theme=dark] .bookmark-button[aria-pressed=true]{background:var(--important-bg);color:var(--important-ink);border-color:#8a692f}
+ [data-theme=dark] :is(.star-indicator,.state-label.review){color:var(--important-ink)}
+ [data-theme=dark] .primary-button{background:#2d67bf;border-color:#2d67bf;color:#fff}[data-theme=dark] .primary-button:hover:not(:disabled){background:#2559a7}
+ [data-theme=dark] mark{background:#5b491f}
+ [data-theme=dark] .settings-panel{box-shadow:0 10px 40px #0007}[data-theme=dark] .global-search:focus-within{box-shadow:0 0 0 2px #8ab4ff33}
+ [data-theme=dark] .mobile-menu::backdrop{background:#0009}[data-theme=dark] .notice{background:#dce6f4;color:#172333;box-shadow:0 6px 24px #0005}
+}
 </style>
 </head>
 <body>
@@ -63,7 +89,10 @@
 <header class="app-header">
   <div class="brand"><button class="icon-button mobile-only" id="menu-open" aria-label="打开学习目录" type="button">☰</button><button class="brand-mark desktop-only" id="sidebar-toggle" type="button" aria-label="收起侧边栏" aria-expanded="true" aria-controls="desktop-sidebar" title="收起侧边栏">☰</button><span>Java + AI Agent<small>面试学习手册</small></span></div>
   <div class="global-search"><label class="sr-only" for="search">搜索全库题目</label><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索知识点、题目或题号，如 Q165" autocomplete="off"><button id="search-clear" class="icon-button" aria-label="清空搜索" type="button" hidden>×</button><kbd>Ctrl K</kbd></div>
-  <details class="settings" id="settings"><summary>设置与资料</summary><div class="settings-panel"><label for="font-size">正文字号</label><select id="font-size"><option value="16">紧凑</option><option value="18">舒适</option><option value="20">大字</option></select><button type="button" id="reset-layout">恢复默认布局</button><button type="button" id="export-progress">导出学习记录</button><button type="button" id="import-progress">导入学习记录</button><input type="file" id="import-file" accept=".json,application/json" hidden><hr><a href="学习思维导图.mm" download>完整思维导图</a><a href="分类索引.md">分类索引</a><a href="学习Agent开发方案.md">Agent 开发方案</a></div></details>
+  <div class="header-actions">
+    <button class="icon-button theme-toggle" id="theme-toggle" type="button" aria-label="切换到深色模式" aria-pressed="false" title="切换到深色模式"><svg class="theme-moon" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 13A9 9 0 0 1 11 3.2 9 9 0 1 0 20.8 13Z"/></svg><svg class="theme-sun" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    <details class="settings" id="settings"><summary aria-label="设置与资料">设置<span class="settings-extra-label">与资料</span></summary><div class="settings-panel"><label for="theme-mode">显示模式</label><select id="theme-mode"><option value="system">跟随系统</option><option value="light">浅色模式</option><option value="dark">深色模式</option></select><label for="font-size">正文字号</label><select id="font-size"><option value="16">紧凑</option><option value="18">舒适</option><option value="20">大字</option></select><button type="button" id="reset-layout">恢复默认布局</button><button type="button" id="export-progress">导出学习记录</button><button type="button" id="import-progress">导入学习记录</button><input type="file" id="import-file" accept=".json,application/json" hidden><hr><a href="学习思维导图.mm" download>完整思维导图</a><a href="分类索引.md">分类索引</a><a href="学习Agent开发方案.md">Agent 开发方案</a></div></details>
+  </div>
 </header>
 <div class="app-shell">
   <aside class="sidebar" id="desktop-sidebar" aria-label="学习目录"><div id="desktop-nav"></div><div class="sidebar-foot"><span class="offline-dot" aria-hidden="true"></span><span id="storage-label">本地学习 · 记录保存在本浏览器</span><button type="button" class="text-button" id="backup-hint">备份学习记录</button></div><div id="sidebar-resize" class="pane-resize" role="separator" tabindex="0" aria-label="调整侧边栏宽度" aria-orientation="vertical" aria-valuemin="190" aria-valuemax="360" aria-valuenow="280" title="拖动调整目录宽度，也可用左右方向键调整"></div></aside>
@@ -109,7 +138,7 @@ function validRoute(input={}){
  return r;
 }
 function sanitizeProgress(input){
- const p={bookmarks:{},important:{},status:{},notes:{},drafts:{},expandedGroups:{},randomOrder:[],sidebarCollapsed:false,sidebarWidth:280,questionPaneWidth:320,lastRead:'',lastRoute:{...defaultRoute},font:18,mode:'quiz'};
+ const p={bookmarks:{},important:{},status:{},notes:{},drafts:{},expandedGroups:{},randomOrder:[],sidebarCollapsed:false,sidebarWidth:280,questionPaneWidth:320,lastRead:'',lastRoute:{...defaultRoute},font:18,mode:'quiz',theme:'system'};
  if(!input||typeof input!=='object')return p;
  for(const id of byId.keys()){
   if(input.bookmarks&&input.bookmarks[id])p.bookmarks[id]=true;
@@ -122,6 +151,7 @@ function sanitizeProgress(input){
  p.lastRoute=validRoute(input.lastRoute||{});
  if([16,18,20].includes(input.font))p.font=input.font;
  if(['quiz','read'].includes(input.mode))p.mode=input.mode;
+ if(['system','light','dark'].includes(input.theme))p.theme=input.theme;
  if(Array.isArray(input.randomOrder))p.randomOrder=[...new Set(input.randomOrder.filter(id=>byId.has(id)))];
  p.sidebarCollapsed=input.sidebarCollapsed===true;
  if(Number.isFinite(input.sidebarWidth))p.sidebarWidth=Math.max(190,Math.min(360,input.sidebarWidth));
@@ -131,6 +161,14 @@ function sanitizeProgress(input){
 }
 function load(){try{return sanitizeProgress(JSON.parse(localStorage.getItem(STORAGE)||'null'))}catch{return sanitizeProgress(null)}}
 let progress=load();
+const systemTheme=matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){
+ const dark=progress.theme==='dark'||progress.theme==='system'&&systemTheme.matches;
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ $('theme-mode').value=progress.theme;
+ const toggle=$('theme-toggle'),label=dark?'切换到浅色模式':'切换到深色模式';
+ toggle.setAttribute('aria-pressed',String(dark));toggle.setAttribute('aria-label',label);toggle.title=label;
+}
 function save(){
  clearTimeout(saveTimer);
  try{localStorage.setItem(STORAGE,JSON.stringify(progress))}
@@ -351,7 +389,7 @@ function render(){
  if(route.view==='random'&&!route.query&&route.qid)mobileView='reader';
  const index=list.findIndex(q=>q.id===route.qid);
  if(index>=0)route.page=Math.floor(index/PAGE_SIZE)+1;
- document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;applyLayout();
+ document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;applyLayout();applyTheme();
  renderNavigation('desktop-nav');renderNavigation('mobile-nav');renderContext(list);renderList(list);renderReader(list);$('reading-workspace').classList.toggle('is-empty',!list.length);updateMobile();syncUrl();progress.lastRoute={...route};
  document.title=(route.qid?route.qid+' · ':'')+'Java + AI Agent 学习手册';
 }
@@ -369,6 +407,9 @@ $('show-list').onclick=()=>{mobileView='list';updateMobile();$('reading-workspac
 $('menu-open').onclick=()=>$('mobile-menu').showModal();$('menu-close').onclick=()=>$('mobile-menu').close();
 $('mobile-menu').addEventListener('click',event=>{if(event.target===$('mobile-menu')){const rect=event.target.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)event.target.close()}});
 $('font-size').onchange=()=>{progress.font=Number($('font-size').value);save();document.documentElement.style.setProperty('--answer-size',progress.font+'px')};
+$('theme-toggle').onclick=()=>{progress.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme();save()};
+$('theme-mode').onchange=()=>{progress.theme=$('theme-mode').value;applyTheme();save()};
+systemTheme.addEventListener('change',()=>{if(progress.theme==='system')applyTheme()});
 $('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;applyLayout();save()};
 $('reset-layout').onclick=()=>{progress.sidebarCollapsed=false;progress.sidebarWidth=280;progress.questionPaneWidth=320;progress.font=18;progress.expandedGroups={};render();save();notify('已恢复默认模块大小和目录布局。')};
 setupPaneResize('sidebar-resize','sidebarWidth',190,360,$('desktop-sidebar'));
@@ -388,6 +429,7 @@ $('import-file').onchange=async()=>{
   for(const key of ['bookmarks','important','status','notes','drafts','expandedGroups'])progress[key]={...progress[key],...incoming[key]};
   if(incoming.lastRead)progress.lastRead=incoming.lastRead;
   progress.font=incoming.font;progress.mode=incoming.mode;
+  if(['system','light','dark'].includes(payload.progress.theme))progress.theme=incoming.theme;
   progress.sidebarCollapsed=incoming.sidebarCollapsed;progress.sidebarWidth=incoming.sidebarWidth;progress.questionPaneWidth=incoming.questionPaneWidth;
   if(incoming.randomOrder.length===byId.size)progress.randomOrder=incoming.randomOrder;
   save();render();$('settings').open=false;notify('学习记录已合并，重点标记和布局偏好已恢复。');

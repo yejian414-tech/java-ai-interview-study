@@ -25,7 +25,7 @@ function validRoute(input={}){
  return r;
 }
 function sanitizeProgress(input){
- const p={bookmarks:{},important:{},status:{},notes:{},drafts:{},expandedGroups:{},randomOrder:[],sidebarCollapsed:false,sidebarWidth:280,questionPaneWidth:320,lastRead:'',lastRoute:{...defaultRoute},font:18,mode:'quiz'};
+ const p={bookmarks:{},important:{},status:{},notes:{},drafts:{},expandedGroups:{},randomOrder:[],sidebarCollapsed:false,sidebarWidth:280,questionPaneWidth:320,lastRead:'',lastRoute:{...defaultRoute},font:18,mode:'quiz',theme:'system'};
  if(!input||typeof input!=='object')return p;
  for(const id of byId.keys()){
   if(input.bookmarks&&input.bookmarks[id])p.bookmarks[id]=true;
@@ -38,6 +38,7 @@ function sanitizeProgress(input){
  p.lastRoute=validRoute(input.lastRoute||{});
  if([16,18,20].includes(input.font))p.font=input.font;
  if(['quiz','read'].includes(input.mode))p.mode=input.mode;
+ if(['system','light','dark'].includes(input.theme))p.theme=input.theme;
  if(Array.isArray(input.randomOrder))p.randomOrder=[...new Set(input.randomOrder.filter(id=>byId.has(id)))];
  p.sidebarCollapsed=input.sidebarCollapsed===true;
  if(Number.isFinite(input.sidebarWidth))p.sidebarWidth=Math.max(190,Math.min(360,input.sidebarWidth));
@@ -47,6 +48,14 @@ function sanitizeProgress(input){
 }
 function load(){try{return sanitizeProgress(JSON.parse(localStorage.getItem(STORAGE)||'null'))}catch{return sanitizeProgress(null)}}
 let progress=load();
+const systemTheme=matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){
+ const dark=progress.theme==='dark'||progress.theme==='system'&&systemTheme.matches;
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ $('theme-mode').value=progress.theme;
+ const toggle=$('theme-toggle'),label=dark?'切换到浅色模式':'切换到深色模式';
+ toggle.setAttribute('aria-pressed',String(dark));toggle.setAttribute('aria-label',label);toggle.title=label;
+}
 function save(){
  clearTimeout(saveTimer);
  try{localStorage.setItem(STORAGE,JSON.stringify(progress))}
@@ -267,7 +276,7 @@ function render(){
  if(route.view==='random'&&!route.query&&route.qid)mobileView='reader';
  const index=list.findIndex(q=>q.id===route.qid);
  if(index>=0)route.page=Math.floor(index/PAGE_SIZE)+1;
- document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;applyLayout();
+ document.documentElement.style.setProperty('--answer-size',progress.font+'px');$('font-size').value=progress.font;applyLayout();applyTheme();
  renderNavigation('desktop-nav');renderNavigation('mobile-nav');renderContext(list);renderList(list);renderReader(list);$('reading-workspace').classList.toggle('is-empty',!list.length);updateMobile();syncUrl();progress.lastRoute={...route};
  document.title=(route.qid?route.qid+' · ':'')+'Java + AI Agent 学习手册';
 }
@@ -285,6 +294,9 @@ $('show-list').onclick=()=>{mobileView='list';updateMobile();$('reading-workspac
 $('menu-open').onclick=()=>$('mobile-menu').showModal();$('menu-close').onclick=()=>$('mobile-menu').close();
 $('mobile-menu').addEventListener('click',event=>{if(event.target===$('mobile-menu')){const rect=event.target.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)event.target.close()}});
 $('font-size').onchange=()=>{progress.font=Number($('font-size').value);save();document.documentElement.style.setProperty('--answer-size',progress.font+'px')};
+$('theme-toggle').onclick=()=>{progress.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme();save()};
+$('theme-mode').onchange=()=>{progress.theme=$('theme-mode').value;applyTheme();save()};
+systemTheme.addEventListener('change',()=>{if(progress.theme==='system')applyTheme()});
 $('sidebar-toggle').onclick=()=>{progress.sidebarCollapsed=!progress.sidebarCollapsed;applyLayout();save()};
 $('reset-layout').onclick=()=>{progress.sidebarCollapsed=false;progress.sidebarWidth=280;progress.questionPaneWidth=320;progress.font=18;progress.expandedGroups={};render();save();notify('已恢复默认模块大小和目录布局。')};
 setupPaneResize('sidebar-resize','sidebarWidth',190,360,$('desktop-sidebar'));
@@ -304,6 +316,7 @@ $('import-file').onchange=async()=>{
   for(const key of ['bookmarks','important','status','notes','drafts','expandedGroups'])progress[key]={...progress[key],...incoming[key]};
   if(incoming.lastRead)progress.lastRead=incoming.lastRead;
   progress.font=incoming.font;progress.mode=incoming.mode;
+  if(['system','light','dark'].includes(payload.progress.theme))progress.theme=incoming.theme;
   progress.sidebarCollapsed=incoming.sidebarCollapsed;progress.sidebarWidth=incoming.sidebarWidth;progress.questionPaneWidth=incoming.questionPaneWidth;
   if(incoming.randomOrder.length===byId.size)progress.randomOrder=incoming.randomOrder;
   save();render();$('settings').open=false;notify('学习记录已合并，重点标记和布局偏好已恢复。');
